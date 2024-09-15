@@ -454,9 +454,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cableGrapple: {fileID: 0}
+  playerMovement: {fileID: 0}
   charge1Slider: {fileID: 6576122952864944563}
   charge2Slider: {fileID: 32235251240293792}
   charge3Slider: {fileID: 5860952206833106873}
+  sheepArm: {fileID: 8566076498317393575}
 --- !u!1 &2970132966403416519
 GameObject:
   m_ObjectHideFlags: 0

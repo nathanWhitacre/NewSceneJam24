@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Rigidbody playerRigidBody;
     [SerializeField] private AudioSource sheepSound;
     [SerializeField] private AudioClip[] baahs;
+    [SerializeField] private AudioSource footStep;
     [SerializeField] private float topSpeed = 10f;
     [SerializeField] private float topFlyingSpeed = 30f;
     [SerializeField] private float acceleration = 1f;
@@ -36,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
     public bool isJumping;
     public bool isFlying;
     public bool isBaahing;
+    public bool isWalking;
 
     /*
     public float lastX;
@@ -69,6 +71,12 @@ public class PlayerMovement : MonoBehaviour
         if (hasSheep && !isBaahing)
         {
             StartCoroutine(RealisticSheepBaah());
+        }
+
+        //Walking Sounds
+        if (isGrounded && isMoving && !isWalking)
+        {
+            StartCoroutine(walking());
         }
 
     }
@@ -256,6 +264,19 @@ public class PlayerMovement : MonoBehaviour
             yield return new WaitForSeconds(UnityEngine.Random.Range(5f, 10f));
         }
         isBaahing = false;
+    }
+
+
+    private IEnumerator walking()
+    {
+        isWalking = true;
+        while (isGrounded && isMoving)
+        {
+
+            footStep.Play();
+            yield return new WaitForSeconds(0.333f);
+        }
+        isWalking = false;
     }
 
 }
