@@ -8,7 +8,6 @@ public class AltarSheepController : MonoBehaviour
     private int totalSheep = 7;
     private ChainMovement chainScript;
     private int sheepCount;
-    private EndManager ending;
     [SerializeField] private Transform[] locations;
     [SerializeField] private GameObject sheepPrefab;
     private GameObject[] sheeps;
