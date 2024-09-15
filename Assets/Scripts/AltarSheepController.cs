@@ -40,7 +40,7 @@ public class AltarSheepController : MonoBehaviour
             sheepCount += 1;
             chainScript.ChangeSheepCount(sheepCount);
             if (sheepCount == totalSheep) {
-                SceneManager.LoadScene(2);  //ending scene
+                SceneManager.LoadScene(3);  //good ending scene
             }
         }
     }
