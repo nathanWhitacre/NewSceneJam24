@@ -20,16 +20,19 @@ public class ChainMovement : MonoBehaviour
     [SerializeField] private float observeDist;
     private float followKillTime;
     private float detectedKillTime;
+    private ChainSounds sounds;
+    public bool isActive;
 
     void Start()
     {
-        sheepCount = 6; //change this back to 1 later
+        sheepCount = 1;
         enemyLayerMask = LayerMask.NameToLayer("chain");
         thisTrans = this.gameObject.GetComponent<Transform>();
         thisBody = this.gameObject.GetComponent<Rigidbody>();
         thisRenderer = this.gameObject.GetComponent<MeshRenderer>();
         mainCamera = Camera.main;
         cableTrans = GameObject.FindWithTag("Player").GetComponent<Transform>();
+        sounds = this.gameObject.GetComponent<ChainSounds>();
         StartCoroutine(ChangeState(0));
         ChangeSheepCount(sheepCount);
     }
@@ -122,19 +125,28 @@ public class ChainMovement : MonoBehaviour
     }
 
     IEnumerator State0() {  //neutral
-        thisTrans.position = GroundPosition(neutralTrans.position);
-        yield return new WaitForSeconds(NeutralWaitTime());
-        float rando = Random.Range(0f, 1f);
-        if (rando < 0.7f) {
-            StartCoroutine(ChangeState(1));
-        }
-        else {
-            StartCoroutine(ChangeState(5));
+        if (isActive) {
+            thisTrans.position = GroundPosition(neutralTrans.position);
+            yield return new WaitForSeconds(NeutralWaitTime());
+            float rando = Random.Range(0f, 1f);
+            if (rando < 0.7f) {
+                StartCoroutine(ChangeState(1));
+            }
+            else {
+                StartCoroutine(ChangeState(5));
+            }
         }
         yield return null;
     }
 
+    IEnumerator PlayRandomSound() {
+        yield return new WaitForSeconds(Random.Range(0.5f, detectedKillTime / 3));
+        sounds.PlayRandomSound();
+        yield return null;
+    }
+
     IEnumerator State1() {  //following undetected
+        StartCoroutine(PlayRandomSound());
         float tempDist = followDist + Random.Range(-3f, 3f);
         thisTrans.position = GroundPosition(cableTrans.position + (cableTrans.forward * -1 * tempDist));
         Coroutine followCor = StartCoroutine(Follow(tempDist));
@@ -166,7 +178,11 @@ public class ChainMovement : MonoBehaviour
         float detectedStartTime = Time.time;
         Coroutine randEvent = StartCoroutine(RandomCloseEvent());
         bool noNeedDist = Random.Range(0f, 1f) < 0.5f;  //if this is true, the player doesn't need to get away from the chain
-        while (Time.time - detectedStartTime < detectedKillTime) {
+        float distBias = 0f;
+        if (noNeedDist == false) {
+            distBias = 6f;
+        }
+        while ((Time.time - detectedStartTime) < (detectedKillTime + distBias)) {
             yield return new WaitForEndOfFrame();
             if (VisibleToPlayer() == false && (noNeedDist || Vector3.Distance(cableTrans.position, thisTrans.position) > killDistance)) {
                 StopCoroutine(randEvent);
@@ -180,7 +196,7 @@ public class ChainMovement : MonoBehaviour
     }
 
     IEnumerator RandomCloseEvent() {
-        float randTime = Random.Range(1f, detectedKillTime);
+        float randTime = Random.Range(1f, detectedKillTime - 2f);
         yield return new WaitForSeconds(randTime);
         float randOption = Random.Range(0f, 1f);
         if (randOption < 0.4f) {
@@ -215,6 +231,7 @@ public class ChainMovement : MonoBehaviour
     }
 
     IEnumerator State5() {  //far undetected
+        StartCoroutine(PlayRandomSound());
         float tempDist = observeDist + Random.Range(-3f, 3f);
         thisTrans.position = GroundPosition(cableTrans.position + (cableTrans.forward * -1 * tempDist));
         float observeEventTime = Random.Range(5f, 30f);

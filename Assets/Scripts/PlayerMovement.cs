@@ -32,6 +32,15 @@ public class PlayerMovement : MonoBehaviour
     public bool isJumping;
     public bool isFlying;
 
+    /*
+    public float lastX;
+    public float lastZ;
+    public Vector3 currentDecelerationStart;
+    public bool isDecelerating;
+    public float maxSpeed;
+    */
+    public bool hasSheep;  //this actually needs to be public
+
     // Start is called before the first frame update
     void Start()
     {
