@@ -145,8 +145,10 @@ public class PlayerMovement : MonoBehaviour
             //if (newHorizontalSpeed <= maxSpeed && Mathf.Abs(newVelocity.z - newInputMovement.z) < 2f) newVelocity.z = newInputMovement.z;
             if (newHorizontalSpeed <= maxSpeed) newVelocity.x = newInputMovement.x;
             if (newHorizontalSpeed <= maxSpeed) newVelocity.z = newInputMovement.z;
-            //newVelocity.x = (newHorizontalSpeed <= maxSpeed) ? newInputMovement.x : (newVelocity.x + (newInputMovement.x * 0.001f));
-            //newVelocity.z = (newHorizontalSpeed <= maxSpeed) ? newInputMovement.z : (newVelocity.z + (newInputMovement.z * 0.001f));
+            //newVelocity.x = (newHorizontalSpeed <= maxSpeed) ? newInputMovement.x : (newVelocity.x * (newInputMovement.normalized.x));
+            //newVelocity.z = (newHorizontalSpeed <= maxSpeed) ? newInputMovement.z : (newVelocity.z * (newInputMovement.normalized.z));
+            //newVelocity.x = newInputMovement.x;
+            //newVelocity.z = newInputMovement.z;
             currentInputMovement = newInputMovement;
         }
         else
