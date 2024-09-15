@@ -8,7 +8,6 @@ public class AltarSheepController : MonoBehaviour
     private int totalSheep = 7;
     private ChainMovement chainScript;
     private int sheepCount;
-    private EndManager ending;
     [SerializeField] private Transform[] locations;
     [SerializeField] private GameObject sheepPrefab;
     private GameObject[] sheeps;
@@ -40,7 +39,7 @@ public class AltarSheepController : MonoBehaviour
             sheepCount += 1;
             chainScript.ChangeSheepCount(sheepCount);
             if (sheepCount == totalSheep) {
-                SceneManager.LoadScene(2);  //ending scene
+                SceneManager.LoadScene(3);  //good ending scene
             }
         }
     }

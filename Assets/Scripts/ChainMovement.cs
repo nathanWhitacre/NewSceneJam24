@@ -46,7 +46,7 @@ public class ChainMovement : MonoBehaviour
         if (!inKill) {
             FacePlayer();
             thisBody.angularVelocity = Vector3.zero;
-            if (Vector3.Distance(thisTrans.position, cableTrans.position) < 1f) {
+            if (Vector3.Distance(thisTrans.position, cableTrans.position) < 2f) {
                 StopAllCoroutines();
                 StartCoroutine(ChangeState(3));
             }
@@ -218,8 +218,7 @@ public class ChainMovement : MonoBehaviour
     
     IEnumerator State3() {  //frontal attack
         if (Vector3.Distance(thisTrans.position, cableTrans.position) < killDistance) {
-            Debug.Log("you die from a frontal attack");
-            Destroy(cableTrans.gameObject);
+            this.StartFrontKillRoutine();
         } else {
             StartCoroutine(ChangeState(0));
         }
@@ -228,7 +227,6 @@ public class ChainMovement : MonoBehaviour
 
     IEnumerator State4() {  //sneak attack
         if (Vector3.Distance(thisTrans.position, cableTrans.position) < killDistance) {
-            Debug.Log("kill");
             this.StartBehindKillRoutine();
         } else {
             StartCoroutine(ChangeState(0));
@@ -285,8 +283,8 @@ public class ChainMovement : MonoBehaviour
     }
 
     IEnumerator KillPlayerFromBehind() {
-        Debug.Log("kill behind");
         inKill = true;
+        sounds.PlayBreathing();
         //lock player camera
         cableTrans.gameObject.GetComponent<PlayerMovement>().enabled = false;
         Camera playerCamera = Camera.main;
@@ -310,6 +308,30 @@ public class ChainMovement : MonoBehaviour
         }
         yield return new WaitForSeconds(1.5f);
         SceneManager.LoadScene(2);  //death scene
+        yield return null;
+    }
+
+    void StartFrontKillRoutine() {
+        StopAllCoroutines();
+        StartCoroutine(KillPlayerFromFront());
+    }
+
+    IEnumerator KillPlayerFromFront() {
+        inKill = true;
+        sounds.PlayBreathing();
+        //lock player camera
+        cableTrans.gameObject.GetComponent<PlayerMovement>().enabled = false;
+        cableTrans.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        Camera playerCamera = Camera.main;
+        playerCamera.gameObject.GetComponent<CameraLook>().enabled = false;
+        Vector3 currAngles = playerCamera.transform.localEulerAngles;
+        playerCamera.transform.localEulerAngles = new Vector3(0, currAngles.y, currAngles.z);
+        //move chain to player front
+        thisTrans.position = GroundPosition(cableTrans.position + (cableTrans.forward * 0.6f)) + (Vector3.up * -1.25f);
+        thisTrans.rotation = Quaternion.LookRotation(cableTrans.position - thisTrans.position, Vector3.up);
+        thisTrans.eulerAngles = new Vector3(0, thisTrans.eulerAngles.y, 0);
+        yield return new WaitForSeconds(2f);
+        SceneManager.LoadScene(2);
         yield return null;
     }
 

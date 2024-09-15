@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEditor.Build.Content;
 using UnityEditor.Search;
 using UnityEngine;
@@ -10,6 +12,8 @@ public class PlayerMovement : MonoBehaviour
 {
 
     [SerializeField] private Rigidbody playerRigidBody;
+    [SerializeField] private AudioSource sheepSound;
+    [SerializeField] private AudioClip[] baahs;
     [SerializeField] private float topSpeed = 10f;
     [SerializeField] private float topFlyingSpeed = 30f;
     [SerializeField] private float acceleration = 1f;
@@ -31,6 +35,7 @@ public class PlayerMovement : MonoBehaviour
     public bool isLocked;
     public bool isJumping;
     public bool isFlying;
+    public bool isBaahing;
 
     /*
     public float lastX;
@@ -58,6 +63,12 @@ public class PlayerMovement : MonoBehaviour
             //playerRigidBody.velocity += new Vector3(0f, 0f, 100f);
             //playerRigidBody.velocity += new Vector3(0f, 10f, 0f);
             StartCoroutine(jump());
+        }
+
+        //Has Sheep
+        if (hasSheep && !isBaahing)
+        {
+            StartCoroutine(RealisticSheepBaah());
         }
 
     }
@@ -230,6 +241,21 @@ public class PlayerMovement : MonoBehaviour
                 isJumping = false;
             }
         }
+    }
+
+
+    private IEnumerator RealisticSheepBaah()
+    {
+        isBaahing = true;
+        while (hasSheep)
+        {
+
+            
+            sheepSound.clip = baahs[UnityEngine.Random.Range(0, baahs.Length)];
+            sheepSound.PlayOneShot(sheepSound.clip);
+            yield return new WaitForSeconds(UnityEngine.Random.Range(5f, 10f));
+        }
+        isBaahing = false;
     }
 
 }
