@@ -6,12 +6,13 @@ public class ShepScript : MonoBehaviour
 {
     public AudioClip[] Baahs;
     private AudioSource Sheep;
+    public int SheepTotal;
     // Start is called before the first frame update
     void Start()
     {
         // Code that lets the sheep baah randomly
         StartCoroutine(RealisticSheepBaah());
-
+        SheepTotal = 0;
     }
 
     // Update is called once per frame
@@ -28,8 +29,12 @@ public class ShepScript : MonoBehaviour
             Sheep = GetComponent<AudioSource>();
             Sheep.clip = Baahs[Random.Range(0, Baahs.Length)];
             Sheep.PlayOneShot(Sheep.clip);
-            Debug.Log(Baahs);
             yield return new WaitForSeconds(Random.Range(5f, 10f));
         }
+    }
+    public void OnTriggerEnter(Collider other)
+    {
+        Destroy(gameObject);
+        SheepTotal = SheepTotal + 1;
     }
 }
