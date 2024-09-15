@@ -160,7 +160,6 @@ public class ChainMovement : MonoBehaviour
                 thisTrans.position = GroundPosition(thisTrans.position + (thisTrans.forward * 1));
             }
         }
-        yield return null;
     }
 
     IEnumerator State2() {  //close range detected
@@ -198,6 +197,7 @@ public class ChainMovement : MonoBehaviour
     IEnumerator State3() {  //frontal attack
         if (Vector3.Distance(thisTrans.position, cableTrans.position) < killDistance) {
             Debug.Log("you die from a frontal attack");
+            Destroy(cableTrans.gameObject);
         } else {
             StartCoroutine(ChangeState(0));
         }
@@ -207,6 +207,7 @@ public class ChainMovement : MonoBehaviour
     IEnumerator State4() {  //sneak attack
         if (Vector3.Distance(thisTrans.position, cableTrans.position) < killDistance) {
             Debug.Log("you die from a sneak attack");
+            Destroy(cableTrans.gameObject);
         } else {
             StartCoroutine(ChangeState(0));
         }        
