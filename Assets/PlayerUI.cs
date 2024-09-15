@@ -7,9 +7,11 @@ public class PlayerUI : MonoBehaviour
 {
 
     [SerializeField] private CableGrapple cableGrapple;
+    [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private Slider charge1Slider;
     [SerializeField] private Slider charge2Slider;
     [SerializeField] private Slider charge3Slider;
+    [SerializeField] private Image sheepArm;
 
 
     // Start is called before the first frame update
@@ -18,6 +20,7 @@ public class PlayerUI : MonoBehaviour
         charge1Slider.value = 1f;
         charge2Slider.value = 1f;
         charge3Slider.value = 1f;
+        sheepArm.enabled = false;
     }
 
     // Update is called once per frame
@@ -46,6 +49,15 @@ public class PlayerUI : MonoBehaviour
             charge1Slider.value = 1f;
             charge2Slider.value = 1f;
             charge3Slider.value = 1f;
+        }
+
+        if (playerMovement.hasSheep && !sheepArm.enabled)
+        {
+            sheepArm.enabled = true;
+        }
+        if (!playerMovement.hasSheep && sheepArm.enabled)
+        {
+            sheepArm.enabled = false;
         }
     }
 }
