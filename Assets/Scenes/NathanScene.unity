@@ -176,6 +176,7 @@ MonoBehaviour:
   currentVelocity: {x: 0, y: 0, z: 0}
   currentHorizontalSpeed: 0
   currentInputMovement: {x: 0, y: 0, z: 0}
+  isGrounded: 0
   isMoving: 0
   isRooted: 0
   lastX: 0
@@ -214,7 +215,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 32873846}
   serializedVersion: 4
-  m_Mass: 10000
+  m_Mass: 10
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
