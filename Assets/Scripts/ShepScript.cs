@@ -36,6 +36,10 @@ public class ShepScript : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
+            if (other.gameObject.GetComponent<PlayerMovement>().hasSheep)
+            {
+                return;
+            }
             other.gameObject.GetComponent<PlayerMovement>().hasSheep = true;
             Destroy(gameObject);
             //SheepTotal = SheepTotal + 1;

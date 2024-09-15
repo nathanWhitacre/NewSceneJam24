@@ -7,7 +7,7 @@ public class AltarSheepController : MonoBehaviour
 {
     private int totalSheep = 7;
     private ChainMovement chainScript;
-    private int sheepCount;
+    public int sheepCount;
     [SerializeField] private Transform[] locations;
     [SerializeField] private GameObject sheepPrefab;
     private GameObject[] sheeps;
@@ -35,6 +35,7 @@ public class AltarSheepController : MonoBehaviour
                 bias = 1;
             }
             GameObject shep = Instantiate(sheepPrefab, locations[sheepCount-1].position, Quaternion.LookRotation(new Vector3(0, 0, 1 * bias), new Vector3(0, 1, 0)));            
+            shep.gameObject.GetComponent<Collider>().enabled = false;
             //make sure to disable player detection on shep
             sheepCount += 1;
             chainScript.ChangeSheepCount(sheepCount);
