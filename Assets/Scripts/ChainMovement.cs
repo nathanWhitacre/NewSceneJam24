@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ChainMovement : MonoBehaviour
 {
@@ -22,9 +24,11 @@ public class ChainMovement : MonoBehaviour
     private float detectedKillTime;
     private ChainSounds sounds;
     public bool isActive;
+    private bool inKill;
 
     void Start()
     {
+        inKill = false;
         sheepCount = 1;
         enemyLayerMask = LayerMask.NameToLayer("chain");
         thisTrans = this.gameObject.GetComponent<Transform>();
@@ -39,11 +43,13 @@ public class ChainMovement : MonoBehaviour
 
     void Update()
     {
-        FacePlayer();
-        thisBody.angularVelocity = Vector3.zero;
-        if (Vector3.Distance(thisTrans.position, cableTrans.position) < 1f) {
-            StopAllCoroutines();
-            StartCoroutine(ChangeState(3));
+        if (!inKill) {
+            FacePlayer();
+            thisBody.angularVelocity = Vector3.zero;
+            if (Vector3.Distance(thisTrans.position, cableTrans.position) < 1f) {
+                StopAllCoroutines();
+                StartCoroutine(ChangeState(3));
+            }
         }
     }
 
@@ -222,8 +228,8 @@ public class ChainMovement : MonoBehaviour
 
     IEnumerator State4() {  //sneak attack
         if (Vector3.Distance(thisTrans.position, cableTrans.position) < killDistance) {
-            Debug.Log("you die from a sneak attack");
-            Destroy(cableTrans.gameObject);
+            Debug.Log("kill");
+            this.StartBehindKillRoutine();
         } else {
             StartCoroutine(ChangeState(0));
         }        
@@ -270,6 +276,40 @@ public class ChainMovement : MonoBehaviour
         } else {
             StartCoroutine(ChangeState(0));
         }
+        yield return null;
+    }
+
+    void StartBehindKillRoutine() {
+        StopAllCoroutines();
+        StartCoroutine(KillPlayerFromBehind());
+    }
+
+    IEnumerator KillPlayerFromBehind() {
+        Debug.Log("kill behind");
+        inKill = true;
+        //lock player camera
+        cableTrans.gameObject.GetComponent<PlayerMovement>().enabled = false;
+        Camera playerCamera = Camera.main;
+        playerCamera.gameObject.GetComponent<CameraLook>().enabled = false;
+        Vector3 currAngles = playerCamera.transform.localEulerAngles;
+        playerCamera.transform.localEulerAngles = new Vector3(0, currAngles.y, currAngles.z);
+        //move chain to player rear
+        thisTrans.position = GroundPosition(cableTrans.position + (cableTrans.forward * -1f));
+        thisTrans.rotation = Quaternion.LookRotation(cableTrans.position - thisTrans.position, thisTrans.up);
+        yield return new WaitForSeconds(0.5f);  //kill
+        float dropStart = Time.time;
+        Vector3 cameraPos = playerCamera.transform.position;
+        float startY = cameraPos.y;
+        while (Time.time - dropStart < 0.4f) {
+            currAngles = playerCamera.transform.localEulerAngles;
+            playerCamera.transform.localEulerAngles = Vector3.Lerp(new Vector3(0, currAngles.y, currAngles.z), new Vector3(-90, currAngles.y, currAngles.z), (Time.time - dropStart)/0.4f);
+            cameraPos = playerCamera.transform.position;
+            cameraPos.y = Mathf.Lerp(startY, 0.2f, (Time.time - dropStart)/0.4f);
+            playerCamera.transform.position = cameraPos;
+            yield return new WaitForEndOfFrame();
+        }
+        yield return new WaitForSeconds(1.5f);
+        SceneManager.LoadScene(2);  //death scene
         yield return null;
     }
 
