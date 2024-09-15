@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AltarSheepController : MonoBehaviour
 {
     private int totalSheep = 7;
     private ChainMovement chainScript;
     private int sheepCount;
+    private EndManager ending;
     [SerializeField] private Transform[] locations;
     [SerializeField] private GameObject sheepPrefab;
     private GameObject[] sheeps;
@@ -33,14 +35,14 @@ public class AltarSheepController : MonoBehaviour
             else {
                 bias = 1;
             }
-            Instantiate(sheepPrefab, locations[sheepCount-1].position, Quaternion.LookRotation(new Vector3(0, 0, 1 * bias), new Vector3(0, 1, 0)));            
+            GameObject shep = Instantiate(sheepPrefab, locations[sheepCount-1].position, Quaternion.LookRotation(new Vector3(0, 0, 1 * bias), new Vector3(0, 1, 0)));            
+            //make sure to disable player detection on shep
             sheepCount += 1;
             chainScript.ChangeSheepCount(sheepCount);
+            if (sheepCount == totalSheep) {
+                SceneManager.LoadScene(2);  //ending scene
+            }
         }
-    }
-
-    void UpdateSheepCount() {
-        
     }
 
 }
