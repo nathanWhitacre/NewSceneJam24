@@ -21,10 +21,11 @@ public class ChainMovement : MonoBehaviour
     private float followKillTime;
     private float detectedKillTime;
     private ChainSounds sounds;
+    public bool isActive;
 
     void Start()
     {
-        sheepCount = 6; //change this back to 1 later
+        sheepCount = 1;
         enemyLayerMask = LayerMask.NameToLayer("chain");
         thisTrans = this.gameObject.GetComponent<Transform>();
         thisBody = this.gameObject.GetComponent<Rigidbody>();
@@ -124,14 +125,16 @@ public class ChainMovement : MonoBehaviour
     }
 
     IEnumerator State0() {  //neutral
-        thisTrans.position = GroundPosition(neutralTrans.position);
-        yield return new WaitForSeconds(NeutralWaitTime());
-        float rando = Random.Range(0f, 1f);
-        if (rando < 0.7f) {
-            StartCoroutine(ChangeState(1));
-        }
-        else {
-            StartCoroutine(ChangeState(5));
+        if (isActive) {
+            thisTrans.position = GroundPosition(neutralTrans.position);
+            yield return new WaitForSeconds(NeutralWaitTime());
+            float rando = Random.Range(0f, 1f);
+            if (rando < 0.7f) {
+                StartCoroutine(ChangeState(1));
+            }
+            else {
+                StartCoroutine(ChangeState(5));
+            }
         }
         yield return null;
     }

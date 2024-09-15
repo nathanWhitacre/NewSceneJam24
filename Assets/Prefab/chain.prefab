@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 2286046147366051687}
   m_Layer: 31
   m_Name: chain
-  m_TagString: Untagged
+  m_TagString: Chain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -162,6 +162,7 @@ MonoBehaviour:
   killDistance: 10
   baseDetectedKillTime: 10
   observeDist: 60
+  isActive: 1
 --- !u!114 &6509914927551153322
 MonoBehaviour:
   m_ObjectHideFlags: 0
